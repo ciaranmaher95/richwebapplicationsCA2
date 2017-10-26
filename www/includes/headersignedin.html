@@ -1,0 +1,90 @@
+<html>
+    <head>
+
+        <style>
+            #logo
+            {
+                height:50px;
+                width:50px;
+            }
+            a:hover{
+                cursor: pointer;
+            }
+        </style>
+        <meta charset="UTF-8">
+<!--        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />-->
+        <title></title>
+
+
+        <script>
+
+            var id = localStorage.getItem('memID');
+
+            function logout(id)
+            {
+                if (id !== null)
+                {
+                    window.localStorage.removeItem('memID');
+                    window.location = "index.html";
+                }
+            }
+            $('#logout').click(function () {
+                logout();
+            });
+            
+    
+                
+
+        </script>
+         
+    </head>
+    <body>
+        
+        
+
+        <div id="navigation">
+            <nav class="navbar navbar-custom" role="navigation">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-2 mob-logo">
+                            <div class="row">
+                                <div class="site-logo">
+                                    <a href="form.html"><img src="images/logo.jpg" id="landmark" alt=""/></a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-10 mob-menu">
+                            <div class="row">
+                                <!-- Brand and toggle get grouped for better mobile display -->
+                                <div class="navbar-header">
+                                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#menu">
+                                        <i class="fa fa-bars"></i>
+                                    </button>
+                                </div>
+                                
+                                <!-- Collect the nav links, forms, and other content for toggling -->
+                                <div class="collapse navbar-collapse" id="menu">
+                                    <ul class="nav navbar-nav navbar-right">
+                                        <li><a href="form.html">Home</a></li>
+                                        <li ><a id="logout">Logout</a></li>
+                                         <li><a href="viewUserImages.html">Members</a></li>
+                                        <li> <a href="myprofile.html">Profile</a></li>
+                                        
+                                        
+
+                                    </ul>
+                                </div>
+                                <!-- /.Navbar-collapse -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.container -->
+            </nav>
+        </div>
+
+    </body>
+    
+   
+</html>

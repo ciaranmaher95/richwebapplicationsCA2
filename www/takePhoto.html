@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Geolocation</title>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="utf-8">
+        <style>
+            #map 
+            {
+                height: 100%;
+            }
+
+            html, body 
+            {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #canvasDiv,
+            body
+            {
+                padding:0px;
+                margin:0px;
+            }
+
+            #photoButton
+            {
+                position:fixed;
+                margin: 0px -75px;
+                left:50%;
+                float:top;
+                z-index:1;
+                min-width:150px;
+                min-height:50px;
+            }
+
+            #canvasDiv
+            {
+                position:absolute;
+                top:10px;
+                left:0px;
+                width:100%;
+                height:100%;
+            }
+
+            #photoCanvas
+            {	
+                width:100%;
+                height:100%;
+            }
+
+            #detailsLink
+            {
+                position:fixed;
+                margin: 0px -75px;
+                left:20%;
+                margin-top: 150%; 
+                z-index:1;
+                min-width:150px;
+                min-height:50px;
+            }
+
+            #mapLink
+            {
+                position:fixed;
+                margin: 0px -75px;
+                left:80%;
+                margin-top: 150%; 
+                z-index:1;
+                min-width:150px;
+                min-height:50px;
+            }
+
+        </style>
+
+        <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+        <script type="text/javascript"></script>
+        <script src="https://code.jquery.com/jquery-3.2.0.min.js"></script>
+        <script>
+            
+            var CANVAS_WIDTH = screen.width;     // need to use the actual width and height of the 
+            var CANVAS_HEIGHT = screen.height;   // screen for proper scaling of the image 
+            var canvas;
+            var ctx;
+
+            var deviceType;  // Is this an Apple or Android
+
+            var capturedPhoto = new Image();
+            capturedPhoto.src = "";
+
+            var pictureSource;   // picture source
+            var destinationType; // sets the format of returned value 
+
+            window.onload = onAllAssetsLoaded;
+            document.write("<div id='loadingMessage'>Loading...</div>");
+            function onAllAssetsLoaded()
+            {
+                // Wait for Cordova to connect with the device
+                document.addEventListener("deviceready", onDeviceReady, false);
+            }
+
+            // Cordova is ready to be used!
+            function onDeviceReady()
+            {
+                // hide the webpage loading message
+                document.getElementById('loadingMessage').style.visibility = "hidden";
+
+                canvas = document.getElementById("photoCanvas");
+                ctx = canvas.getContext("2d");
+                canvas.width = CANVAS_WIDTH;
+                canvas.height = CANVAS_HEIGHT;
+
+                // get the device type
+                deviceType = (navigator.userAgent.match(/iPad/i)) == "iPad" ? "iPad" : (navigator.userAgent.match(/iPhone/i)) == "iPhone" ? "iPhone" : (navigator.userAgent.match(/Android/i)) == "Android" ? "Android" : (navigator.userAgent.match(/BlackBerry/i)) == "BlackBerry" ? "BlackBerry" : "null";
+
+                // get camera image types
+                pictureSource = navigator.camera.PictureSourceType;
+                destinationType = navigator.camera.DestinationType;
+            }
+
+
+            // Take picture using device camera and retrieve image as base64-encoded string
+            function takePhoto()
+            {
+                navigator.camera.getPicture(onPhotoDataSuccess, onFail, {quality: 50, destinationType: destinationType.DATA_URL, correctOrientation: true, targetHeight: 200, targetWidth: 200});
+                
+
+            }
+
+
+            // Called when a photo is successfully retrieved
+            function onPhotoDataSuccess(imageData)
+            {
+                capturedPhoto.src = "data:image/jpeg;base64," + imageData;
+
+            }
+
+
+            // Called when a photo is not retrieved
+            function onFail(message)
+            {
+                alert('Failed because: ' + message);
+            }
+
+
+            capturedPhoto.onload = function ()
+            {
+                if (deviceType == "Android")
+                {
+                    // Needed for some Android bug
+                    canvas = document.getElementById("photoCanvas");
+                    canvas.width = CANVAS_WIDTH;
+                    canvas.height = CANVAS_HEIGHT;
+                    ctx = canvas.getContext("2d");
+
+                }
+
+                if ((CANVAS_WIDTH / capturedPhoto.width) < (CANVAS_HEIGHT / capturedPhoto.height))
+                {
+                    capturedPhotoRatio = CANVAS_WIDTH / capturedPhoto.width;
+                } else
+                {
+                    capturedPhotoRatio = CANVAS_HEIGHT / capturedPhoto.height;
+                }
+
+                ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+                ctx.drawImage(capturedPhoto, 0, 0, capturedPhoto.width * capturedPhotoRatio, capturedPhoto.height * capturedPhotoRatio);
+
+                $('#detailsDiv').html('<input type="button" id="detailsLink" value="Add Details">');
+                $('#mapDiv').html('<input type="button" id="mapLink" value="View Map">');
+
+                $('#detailsLink').click(function () {
+                    
+                    
+                    window.location = 'http://192.168.1.35/richweblocationapp/form.html';
+
+
+                });
+                $('#mapLink').click(function () {
+
+                    window.location = 'map.html';
+
+                });
+
+        }
+
+
+
+
+
+        </script>
+    </head>
+    <body>
+
+        <div id = "canvasDiv">
+            <canvas id = "photoCanvas">
+                Your browser does not support the HTML5 canvas tactx.
+            </canvas>
+        </div>
+
+        <button id = 'photoButton' onclick="takePhoto();">Take Photo</button>
+
+        <div id="detailsDiv"></div>
+        <div id="mapDiv"></div>     
+
+
+    </body>
+</html>
